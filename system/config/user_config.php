@@ -7,7 +7,7 @@
 define('IS_AJAX', isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 //DB variables.
 define('dbHost', "localhost");
-define('db', "generic");
+define('db', "SBS");
 define('dbUsername', "root");
 define('dbPassword', "");
 define('UserTable', "users");

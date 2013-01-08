@@ -87,4 +87,80 @@ function loginUser($username, $password){
     closeConnection();
 }
 
+function checkEmailExists($email){
+    openConnection();
+    $email = stripcslashes(mysql_real_escape_string($email));
+    $sql = mysql_query("SELECT * FROM `".UserTable."` WHERE `mail`='$email'");
+    if(!$sql){
+        writeDevLog("severe", mysql_error());
+        die("An error has occured, sorry about that.");
+    }
+    $count = mysql_num_rows($sql);
+    if($count == 1)
+        echo "0";
+    else
+        echo "1";
+    closeConnection();
+}
+
+function checkUserExists($username){
+    openConnection();
+    $username = stripcslashes(mysql_real_escape_string($username));
+    $sql = mysql_query("SELECT * FROM `".UserTable."` WHERE `username`='$username'");
+    if(!$sql){
+        writeDevLog("severe", mysql_error());
+        die("An error has occured, sorry about that.");
+    }
+    $count = mysql_num_rows($sql);
+    if($count == 1)
+        echo "0";
+    else
+        echo "1";
+    closeConnection();
+}
+
+function getUserID($username){
+    $IDQuery = mysql_query("SELECT `ID` from `". UserTable ."` WHERE `username` = '$user'");
+    if(!$IDQuery){
+        echo "An error has occured, sorry about that.";
+        writeDevLog("severe", mysql_error());
+    }
+    $ID = mysql_fetch_row($IDQuery);
+    echo $ID[0];
+}
+
+function getUsername($ID){
+    $NameQuery = mysql_query("SELECT `username` from `". UserTable ."` where `ID` = '$ID'");
+    if(!$NameQuery){
+        echo "An error has occured, sorry about that.";
+        writeDevLog("severe", mysql_error());
+    }
+    $Name = mysql_fetch_row($NameQuery);
+    echo $Name[0];
+}
+
+function createUser($username, $password, $mail){
+    $username = stripcslashes(mysql_real_escape_string($username));
+    $password = stripcslashes(mysql_real_escape_string($password));
+    $password = md5($password . salt);
+    $mail = stripcslashes(mysql_real_escape_string($mail));
+    //If you want to implement date of register, I've already gone ahead and fixed the date-codex for you =)
+    $date = date("Y-m-d H:i:s");
+    if(!checkUserExists($username) || !checkEmailExists($mail)){
+        openConnection();
+        $insertQuery = "INSERT INTO `". UserTable ."` VALUES('', '$username', '$password', '$mail', '$date');";
+        $result = mysql_query($insertQuery);
+        if(!$result){
+            die("There was an error trying to register, please try again later");
+            writeDevLog("severe", mysql_error());
+        }else{
+            echo "Your account was successfully created!";
+            //Send the user a email or whatnot here.
+            closeConnection();
+        }
+    }else{
+        echo "Duplcate account detected. Account wasn't registered.";
+    }
+}
+
 ?>
