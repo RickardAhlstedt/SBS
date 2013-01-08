@@ -1,5 +1,11 @@
 <?php
 
+/* Purpose of file:
+ * Provide some backbone-features.
+ */
+
+require 'config/user_config.php';
+
 function getWebProp($prop){
     $propArray = parse_ini_file("config/web-config.ini");
     return $propArray[$prop];
@@ -38,6 +44,19 @@ function writeDevLog($level, $msg){
         echo "Logging is not enabled.";
         return;
     }
+}
+
+function escapeString($stringtoEscape){
+    return stripcslashes(mysql_real_escape_string($stringtoEscape));
+}
+
+function openConnection(){
+    mysql_connect(dbHost, dbUsername. dbPassword) or die("Couldn't connect");
+    mysql_select_db(db)or die("Cannot select DB");
+}
+
+function closeConnection(){
+    mysql_close();
 }
 
 ?>
